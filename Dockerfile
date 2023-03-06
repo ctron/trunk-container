@@ -15,7 +15,7 @@ ENV PATH="$PATH:$CARGO_HOME/bin"
 
 # the 'sed' workaround is required due to https://github.com/rust-lang/rustup/issues/2700
 RUN \
-    curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#$SHELL#g' | sh -s -- -y && \
+    curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y && \
     rustup target add wasm32-unknown-unknown
 
 RUN true \
