@@ -51,5 +51,9 @@ RUN \
     esac ; \
     wasm-bindgen --version
 
+# Set the cache directory after installing tools using npm, and make it accessible
+ENV npm_config_cache=/opt/npm
+RUN mkdir $npm_config_cache && chmod a+rwx $npm_config_cache
+
 RUN install -m 0777 -d /usr/src
 VOLUME /usr/src/
