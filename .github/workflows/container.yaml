@@ -33,6 +33,17 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Build trunk
+        run: |
+          mkdir trunk
+          cd trunk
+          curl -sSL https://crates.io/api/v1/crates/trunk/0.16.0/download | tar --strip-components=1 -xzf -
+          ls
+          cargo build --release
+          cross build --release --target aarch64-unknown-linux-gnu
+          mkdir /export/linux/amd64 && cp target/release/trunk /export/linux/arm64/
+          mkdir /export/linux/arm64 && cp target/aarch64-unknown-linux-gnu/release/trunk /export/linux/arm64/
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
