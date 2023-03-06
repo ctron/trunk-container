@@ -33,6 +33,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install cross
+        run: |
+          curl -sSL https://github.com/cross-rs/cross/releases/download/v0.2.5/cross-x86_64-unknown-linux-gnu.tar.gz -o cross.tar.gz
+          tar -xvzf cross.tar.gz
+          sudo install cross /usr/local/bin
+
       - name: Build trunk
         run: |
           mkdir trunk
