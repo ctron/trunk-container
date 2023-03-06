@@ -1,5 +1,7 @@
 FROM registry.access.redhat.com/ubi9/ubi:latest
 
+ARG TARGETPLATFORM
+
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
 RUN dnf -y update
