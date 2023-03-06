@@ -39,18 +39,29 @@ jobs:
           tar -xvzf cross.tar.gz
           sudo install cross /usr/local/bin
 
-      - name: Build trunk
+      - name: Get trunk code
+        # unfortunately, cross can't use "install", so we need to fetch the tarball and use "build" instead
         run: |
           mkdir trunk
           cd trunk
           curl -sSL https://crates.io/api/v1/crates/trunk/0.16.0/download | tar --strip-components=1 -xzf -
           ls
+
+      - name: Build trunk (amd64)
+        run: |
+          cd trunk
           cargo build --release
+          mkdir -p ../build/linux/amd64
+          cp target/release/trunk ../build/linux/amd64/
+
+      - name: Build trunk (arm64)
+        run: |
+          cd trunk
           cross build --release --target aarch64-unknown-linux-gnu
-          mkdir -p build/linux/amd64
-          cp target/release/trunk build/linux/amd64/
-          mkdir -p build/linux/arm64
-          cp target/aarch64-unknown-linux-gnu/release/trunk build/linux/arm64/
+          mkdir -p ../build/linux/arm64
+          cp target/aarch64-unknown-linux-gnu/release/trunk ../build/linux/arm64/
+
+      - run: find build
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -73,7 +84,6 @@ jobs:
         with:
           images: |
             ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
-          # Docker tags based on the following events/attributes
           tags: |
             type=schedule
             type=ref,event=branch
