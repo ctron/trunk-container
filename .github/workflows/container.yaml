@@ -6,11 +6,58 @@ on:
     branches:
       - main
 
+env:
+  IMAGE_NAME: ctron/trunk
+  IMAGE_TAG: latest
+
 jobs:
   build:
     name: build
     runs-on: ubuntu-22.04
 
     steps:
-      - run: |
-          podman build . -t trunk:ci --platform linux/arm64 --platform linux/amd64 --manifest
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ env.IMAGE_TAG }}
+          platforms: linux/arm64, linux/amd64
+          containerfiles: |
+            ./Dockerfile
+
+      - name: Check images created
+        run: buildah images | grep '${{ env.IMAGE_NAME }}'
+
+      - name: Save image
+        run: podman save --multi-image-archive ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} > image.tar
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: container
+          path: image.tar
+          if-no-files-found: error
+
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: "ghcr.io"
+
+      - name: Push containers
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io/${{ github.repository_owner }}
