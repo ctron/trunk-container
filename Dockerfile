@@ -5,7 +5,7 @@ ARG TARGETPLATFORM
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
 RUN dnf -y update
-RUN dnf -y install nodejs gcc
+RUN dnf -y install nodejs
 
 ENV \
     RUSTUP_HOME=/opt/rust \
