@@ -1,7 +1,5 @@
 FROM registry.access.redhat.com/ubi9/ubi:latest as base
 
-LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
-
 RUN dnf -y update
 RUN dnf -y install nodejs gcc
 
@@ -17,8 +15,21 @@ RUN \
     curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y && \
     rustup target add wasm32-unknown-unknown
 
+FROM --platform=$BUILDPLATFORM basregistry.access.redhat.com/ubi9/ubi:latest as builder
 
-FROM --platform=$BUILDPLATFORM base as builder
+RUN dnf -y update
+RUN dnf -y install nodejs gcc
+
+ENV \
+    RUSTUP_HOME=/opt/rust \
+    CARGO_HOME=/opt/rust
+
+# add cargo home to the path, must be in a new step to table able to reference CARGO_HOME
+ENV PATH="$PATH:$CARGO_HOME/bin"
+
+# the 'sed' workaround is required due to https://github.com/rust-lang/rustup/issues/2700
+RUN \
+    curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y
 
 RUN true \
     && curl -sSL https://github.com/cross-rs/cross/releases/download/v0.2.5/cross-x86_64-unknown-linux-gnu.tar.gz -o cross.tar.gz \
