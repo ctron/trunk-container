@@ -28,8 +28,22 @@ RUN true \
 
 RUN rustup target add aarch64-unknown-linux-gnu
 RUN mkdir -p /export/linux/amd64 /export/linux/arm64
-RUN cargo install trunk --target-dir /export/linux/amd64
-RUN cross install trunk --target aarch64-unknown-linux-gnu --target-dir /export/linux/arm64
+
+
+RUN mkdir /build
+WORKDIR /build
+
+RUN curl -sSL https://crates.io/api/v1/crates/trunk/0.16.0/download | tar --strip-components=1 -xzf -
+RUN ls
+RUN cargo install --path . --root /export/linux/amd64
+
+# some hoops to jump through
+
+RUN dnf install -y https://download.docker.com/linux/centos/9/$(uname -p)/stable/Packages/docker-ce-cli-20.10.21-3.el9.$(uname -p).rpm
+RUN env CROSS_CONTAINER_IN_CONTAINER=true cross build --release --path . --target aarch64-unknown-linux-gnu
+RUN mkdir /export/linux/arm64/bin && cp target/aarch64-unknown-linux-gnu/release/trunk /export/linux/arm64/bin/
+
+# verify results
 
 RUN find /export
 
@@ -37,7 +51,7 @@ FROM base
 
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
-COPY --from=builder /export/${TARGETPLATFORM}/trunk /usr/local/bin
+COPY --from=builder /export/${TARGETPLATFORM}/bin/trunk /usr/local/bin
 
 RUN npm install -g sass@1.58.3 && sass --version
 
