@@ -1,9 +1,8 @@
-FROM registry.access.redhat.com/ubi9/ubi:latest
+FROM registry.access.redhat.com/ubi9/ubi:latest as base
 
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
 RUN dnf -y update
-
 RUN dnf -y install nodejs gcc
 
 ENV \
@@ -18,10 +17,27 @@ RUN \
     curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y && \
     rustup target add wasm32-unknown-unknown
 
+
+FROM --platform=$BUILDPLATFORM base as builder
+
 RUN true \
-    && cargo install trunk \
-    && rm -Rf ~/.cargo \
-    && trunk --version
+    && curl -sSL https://github.com/cross-rs/cross/releases/download/v0.2.5/cross-x86_64-unknown-linux-gnu.tar.gz -o cross.tar.gz \
+    && tar -xvzf cross.tar.gz \
+    && install cross /usr/local/bin \
+    && rm cross*
+
+RUN rustup target add aarch64-unknown-linux-gnu
+RUN mkdir -p /export/linux/amd64 /export/linux/arm64
+RUN cargo install trunk --target-dir /export/linux/amd64
+RUN cross install trunk --target aarch64-unknown-linux-gnu --target-dir /export/linux/arm64
+
+RUN find /export
+
+FROM base
+
+LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
+
+COPY --from=builder /export/${TARGETPLATFORM}/trunk /usr/local/bin
 
 RUN npm install -g sass@1.58.3 && sass --version
 
