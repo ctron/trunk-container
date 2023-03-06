@@ -15,7 +15,7 @@ RUN \
     curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y && \
     rustup target add wasm32-unknown-unknown
 
-FROM --platform=$BUILDPLATFORM basregistry.access.redhat.com/ubi9/ubi:latest as builder
+FROM --platform=$BUILDPLATFORM registry.access.redhat.com/ubi9/ubi:latest as builder
 
 RUN uname -a
 
