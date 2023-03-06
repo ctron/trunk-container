@@ -1,0 +1,16 @@
+name: Build containers
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-22.04
+
+    steps:
+      - run: |
+          podman build . -t trunk:ci --platform linux/arm64 --platform linux/amd64 --manifest
