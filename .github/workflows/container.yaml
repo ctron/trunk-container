@@ -1,5 +1,9 @@
 name: Build containers
 
+permissions:
+  contents: read
+  packages: write # for publishing containers
+
 on:
   workflow_dispatch: {}
   push:
