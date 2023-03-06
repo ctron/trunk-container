@@ -17,6 +17,8 @@ RUN \
 
 FROM --platform=$BUILDPLATFORM basregistry.access.redhat.com/ubi9/ubi:latest as builder
 
+RUN uname -a
+
 RUN dnf -y update
 RUN dnf -y install nodejs gcc
 
