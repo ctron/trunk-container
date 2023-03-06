@@ -47,8 +47,8 @@ jobs:
           ls
           cargo build --release
           cross build --release --target aarch64-unknown-linux-gnu
-          mkdir -p /export/linux/amd64 && cp target/release/trunk /export/linux/arm64/
-          mkdir -p /export/linux/arm64 && cp target/aarch64-unknown-linux-gnu/release/trunk /export/linux/arm64/
+          mkdir -p build/linux/amd64 && cp target/release/trunk build/linux/arm64/
+          mkdir -p build/linux/arm64 && cp target/aarch64-unknown-linux-gnu/release/trunk build/linux/arm64/
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
