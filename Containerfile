@@ -2,6 +2,10 @@ FROM registry.access.redhat.com/ubi9/ubi:latest
 
 ARG TARGETPLATFORM
 
+ARG SASS_VERSION="1.59.3"
+ARG WASM_PACK_VERSION="0.11.0"
+ARG WASM_BINDGEN_VERSION="0.2.84"
+
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
 RUN dnf -y update
@@ -21,10 +25,10 @@ RUN \
 
 COPY build/${TARGETPLATFORM}/trunk /usr/local/bin
 
-RUN npm install -g sass@1.58.3 && sass --version
+RUN npm install -g sass@${SASS_VERSION} && sass --version
 
 RUN true \
-    && curl -sSL https://github.com/rustwasm/wasm-pack/releases/download/v0.10.3/wasm-pack-v0.10.3-$(uname -p)-unknown-linux-musl.tar.gz -o wasm-pack.tar.gz \
+    && curl -sSL https://github.com/rustwasm/wasm-pack/releases/download/v${WASM_PACK_VERSION}/wasm-pack-v${WASM_PACK_VERSION}-$(uname -p)-unknown-linux-musl.tar.gz -o wasm-pack.tar.gz \
     && tar --strip-components=1 -xvzf wasm-pack.tar.gz '*/wasm-pack' \
     && rm wasm-pack.tar.gz \
     && cp wasm-pack /usr/local/bin/ && rm wasm-pack \
@@ -33,13 +37,13 @@ RUN true \
 RUN \
     case "$(uname -p)" in \
         aarch64) \
-            curl -sSL https://github.com/rustwasm/wasm-bindgen/releases/download/0.2.84/wasm-bindgen-0.2.84-aarch64-unknown-linux-gnu.tar.gz  -o wasm-bingen.tar.gz \
+            curl -sSL https://github.com/rustwasm/wasm-bindgen/releases/download/${WASM_BINDGEN_VERSION}/wasm-bindgen-${WASM_BINDGEN_VERSION}-aarch64-unknown-linux-gnu.tar.gz  -o wasm-bingen.tar.gz \
             && tar --strip-components=1 -xzvf wasm-bingen.tar.gz '*/wasm-bindgen' \
             && rm wasm-bingen.tar.gz \
             && install wasm-bindgen /usr/local/bin && rm wasm-bindgen \
             ;; \
         x86_64) \
-            curl -sSL https://github.com/rustwasm/wasm-bindgen/releases/download/0.2.84/wasm-bindgen-0.2.84-x86_64-unknown-linux-musl.tar.gz -o wasm-bingen.tar.gz \
+            curl -sSL https://github.com/rustwasm/wasm-bindgen/releases/download/${WASM_BINDGEN_VERSION}/wasm-bindgen-${WASM_BINDGEN_VERSION}-x86_64-unknown-linux-musl.tar.gz -o wasm-bingen.tar.gz \
             && tar --strip-components=1 -xzvf wasm-bingen.tar.gz '*/wasm-bindgen' \
             && rm wasm-bingen.tar.gz \
             && install wasm-bindgen /usr/local/bin && rm wasm-bindgen \
