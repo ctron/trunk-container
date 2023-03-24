@@ -61,3 +61,5 @@ RUN mkdir $npm_config_cache && chmod a+rwx $npm_config_cache
 
 RUN install -m 0777 -d /usr/src
 VOLUME /usr/src/
+
+EXPOSE 8080
