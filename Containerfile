@@ -9,7 +9,7 @@ ARG WASM_BINDGEN_VERSION="0.2.84"
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
 RUN dnf -y update
-RUN dnf -y install nodejs
+RUN dnf -y install nodejs git
 
 ENV \
     RUSTUP_HOME=/opt/rust \
