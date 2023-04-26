@@ -2,7 +2,8 @@ FROM registry.access.redhat.com/ubi9/ubi:latest
 
 ARG TARGETPLATFORM
 
-ARG SASS_VERSION="1.59.3"
+ARG RUST_VERSION="1.69.0"
+ARG SASS_VERSION="1.62.1"
 ARG WASM_PACK_VERSION="0.11.0"
 ARG WASM_BINDGEN_VERSION="0.2.84"
 
@@ -20,7 +21,7 @@ ENV PATH="$PATH:$CARGO_HOME/bin"
 
 # the 'sed' workaround is required due to https://github.com/rust-lang/rustup/issues/2700
 RUN \
-    curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y && \
+    curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y --default-toolchain ${RUST_VERSION} && \
     rustup target add wasm32-unknown-unknown
 
 COPY build/${TARGETPLATFORM}/trunk /usr/local/bin
