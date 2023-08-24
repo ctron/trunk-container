@@ -16,7 +16,7 @@ env:
   IMAGE_NAME: trunk
 
   CROSS_VERSION: "0.2.5"
-  TRUNK_VERSION: "0.16.0"
+  TRUNK_VERSION: "0.17.5"
 
 jobs:
   build:

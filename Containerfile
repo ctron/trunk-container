@@ -2,10 +2,10 @@ FROM registry.access.redhat.com/ubi9/ubi:latest
 
 ARG TARGETPLATFORM
 
-ARG RUST_VERSION="1.69.0"
-ARG SASS_VERSION="1.62.1"
-ARG WASM_PACK_VERSION="0.11.0"
-ARG WASM_BINDGEN_VERSION="0.2.84"
+ARG RUST_VERSION="1.71.0"
+ARG SASS_VERSION="1.66.1"
+ARG WASM_PACK_VERSION="0.12.1"
+ARG WASM_BINDGEN_VERSION="0.2.87"
 
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
