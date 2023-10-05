@@ -14,9 +14,7 @@ on:
 
 env:
   IMAGE_NAME: trunk
-
-  CROSS_VERSION: "0.2.5"
-  TRUNK_VERSION: "0.17.5"
+  TRUNK_VERSION: "0.17.9"
 
 jobs:
   build:
@@ -36,37 +34,23 @@ jobs:
           echo "IMAGE_TAG=$VERSION" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Install cross
+      - name: Fetch trunk (amd64)
         run: |
-          curl -sSL https://github.com/cross-rs/cross/releases/download/v${CROSS_VERSION}/cross-x86_64-unknown-linux-gnu.tar.gz -o cross.tar.gz
-          tar -xvzf cross.tar.gz
-          sudo install cross /usr/local/bin
-
-      - name: Get trunk code
-        # unfortunately, cross can't use "install", so we need to fetch the tarball and use "build" instead
-        run: |
-          mkdir trunk
-          cd trunk
-          curl -sSL https://crates.io/api/v1/crates/trunk/${TRUNK_VERSION}/download | tar --strip-components=1 -xzf -
-          ls
-
-      - name: Build trunk (amd64)
-        run: |
-          cd trunk
-          cargo build --release
+          curl -sSLO https://github.com/ctron/trunk/releases/download/v${TRUNK_VERSION}/trunk-ng-x86_64-unknown-linux-gnu.tar.gz
           mkdir -p ../build/linux/amd64
-          cp target/release/trunk ../build/linux/amd64/
+          chmod a+x trunk-ng
+          cp trunk-ng ../build/linux/amd64/
 
-      - name: Build trunk (arm64)
+      - name: Fetch trunk (arm64)
         run: |
-          cd trunk
-          cross build --release --target aarch64-unknown-linux-gnu
+          curl -sSLO https://github.com/ctron/trunk/releases/download/v${TRUNK_VERSION}/trunk-ng-aarch64-unknown-linux-gnu.tar.gz
           mkdir -p ../build/linux/arm64
-          cp target/aarch64-unknown-linux-gnu/release/trunk ../build/linux/arm64/
+          chmod a+x trunk-ng
+          cp trunk-ng ../build/linux/arm64/
 
       - run: find build
 

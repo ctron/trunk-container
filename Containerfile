@@ -2,8 +2,8 @@ FROM registry.access.redhat.com/ubi9/ubi:latest
 
 ARG TARGETPLATFORM
 
-ARG RUST_VERSION="1.71.0"
-ARG SASS_VERSION="1.66.1"
+ARG RUST_VERSION="1.72.1"
+ARG SASS_VERSION="1.68.0"
 ARG WASM_PACK_VERSION="0.12.1"
 ARG WASM_BINDGEN_VERSION="0.2.87"
 
@@ -24,7 +24,8 @@ RUN \
     curl https://sh.rustup.rs -sSf | sed 's#/proc/self/exe#\/bin\/sh#g' | sh -s -- -y --default-toolchain ${RUST_VERSION} && \
     rustup target add wasm32-unknown-unknown
 
-COPY build/${TARGETPLATFORM}/trunk /usr/local/bin
+COPY build/${TARGETPLATFORM}/trunk-ng /usr/local/bin
+RUN cd /usr/local/bin && ln -s trunk-ng trunk
 
 RUN npm install -g sass@${SASS_VERSION} && sass --version
 
