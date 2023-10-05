@@ -41,16 +41,18 @@ jobs:
       - name: Fetch trunk (amd64)
         run: |
           curl -sSLO https://github.com/ctron/trunk/releases/download/v${TRUNK_VERSION}/trunk-ng-x86_64-unknown-linux-gnu.tar.gz
+          tar xavf trunk-ng-x86_64-unknown-linux-gnu.tar.gz
           mkdir -p ../build/linux/amd64
           chmod a+x trunk-ng
-          cp trunk-ng ../build/linux/amd64/
+          mv trunk-ng ../build/linux/amd64/
 
       - name: Fetch trunk (arm64)
         run: |
           curl -sSLO https://github.com/ctron/trunk/releases/download/v${TRUNK_VERSION}/trunk-ng-aarch64-unknown-linux-gnu.tar.gz
+          tar xavf trunk-ng-aarch64-unknown-linux-gnu.tar.gz
           mkdir -p ../build/linux/arm64
           chmod a+x trunk-ng
-          cp trunk-ng ../build/linux/arm64/
+          mv trunk-ng ../build/linux/arm64/
 
       - run: find build
 
