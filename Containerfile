@@ -9,7 +9,6 @@ ARG WASM_BINDGEN_VERSION="0.2.87"
 
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
-RUN dnf -y update
 RUN dnf -y install nodejs git gcc
 
 ENV \
