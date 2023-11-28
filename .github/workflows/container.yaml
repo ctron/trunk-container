@@ -14,7 +14,7 @@ on:
 
 env:
   IMAGE_NAME: trunk
-  TRUNK_VERSION: "0.17.9"
+  TRUNK_VERSION: "0.17.15"
 
 jobs:
   build:
