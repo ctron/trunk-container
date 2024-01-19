@@ -14,7 +14,7 @@ on:
 
 env:
   IMAGE_NAME: trunk
-  TRUNK_VERSION: "0.17.15"
+  TRUNK_VERSION: "0.18.6"
 
 jobs:
   build:
@@ -40,19 +40,19 @@ jobs:
 
       - name: Fetch trunk (amd64)
         run: |
-          curl -sSLO https://github.com/ctron/trunk/releases/download/v${TRUNK_VERSION}/trunk-ng-x86_64-unknown-linux-gnu.tar.gz
-          tar xavf trunk-ng-x86_64-unknown-linux-gnu.tar.gz
+          curl -sSLO https://github.com/trunk-rs/trunk/releases/download/v${TRUNK_VERSION}/trunk-x86_64-unknown-linux-gnu.tar.gz
+          tar xavf trunk-x86_64-unknown-linux-gnu.tar.gz
           mkdir -p build/linux/amd64
-          chmod a+x trunk-ng
-          mv trunk-ng build/linux/amd64/
+          chmod a+x trunk
+          mv trunk build/linux/amd64/
 
       - name: Fetch trunk (arm64)
         run: |
-          curl -sSLO https://github.com/ctron/trunk/releases/download/v${TRUNK_VERSION}/trunk-ng-aarch64-unknown-linux-gnu.tar.gz
-          tar xavf trunk-ng-aarch64-unknown-linux-gnu.tar.gz
+          curl -sSLO https://github.com/trunk-rs/trunk/releases/download/v${TRUNK_VERSION}/trunk-aarch64-unknown-linux-gnu.tar.gz
+          tar xavf trunk-aarch64-unknown-linux-gnu.tar.gz
           mkdir -p build/linux/arm64
-          chmod a+x trunk-ng
-          mv trunk-ng build/linux/arm64/
+          chmod a+x trunk
+          mv trunk build/linux/arm64/
 
       - run: find build
 
