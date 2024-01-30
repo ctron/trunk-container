@@ -6,6 +6,7 @@ ARG RUST_VERSION="1.75.0"
 ARG SASS_VERSION="1.70.0"
 ARG WASM_PACK_VERSION="0.12.1"
 ARG WASM_BINDGEN_VERSION="0.2.90"
+ARG BINARYEN_VERSION="116"
 
 LABEL org.opencontainers.image.source="https://github.com/ctron/trunk-container"
 
@@ -54,6 +55,20 @@ RUN \
             ;; \
     esac ; \
     wasm-bindgen --version
+
+RUN \
+    case "$(uname -p)" in \
+      x86_64) \
+          curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-x86_64-linux.tar.gz -o binaryen.tar.gz \
+          && tar --strip-components=1 -xzvf binaryen.tar.gz '*/wasm-opt' \
+          && rm wasm-opt.tar.gz \
+          && install bin/wasm-opt /usr/local/bin && rm -Rf bin \
+          && wasm-opt --version \
+          ;; \
+      *) \
+          echo "Ignoring wasm-opt for: $(uname -p)" ; \
+          ;; \
+    esac
 
 # Set the cache directory after installing tools using npm, and make it accessible
 ENV npm_config_cache=/opt/npm
