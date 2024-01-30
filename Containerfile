@@ -61,7 +61,7 @@ RUN \
       x86_64) \
           curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_${BINARYEN_VERSION}/binaryen-version_${BINARYEN_VERSION}-x86_64-linux.tar.gz -o binaryen.tar.gz \
           && tar --strip-components=1 -xzvf binaryen.tar.gz '*/wasm-opt' \
-          && rm wasm-opt.tar.gz \
+          && rm binaryen.tar.gz \
           && install bin/wasm-opt /usr/local/bin && rm -Rf bin \
           && wasm-opt --version \
           ;; \
