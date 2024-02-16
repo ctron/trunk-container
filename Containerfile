@@ -26,6 +26,8 @@ RUN \
 
 COPY build/${TARGETPLATFORM}/trunk /usr/local/bin
 
+RUN trunk --version
+
 RUN npm install -g sass@${SASS_VERSION} && sass --version
 
 RUN true \
